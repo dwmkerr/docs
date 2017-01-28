@@ -186,3 +186,49 @@ F0128 04:25:39.083374       1 heapster.go:67] Get https://hawkular-metrics:443/h
 ```
 
 Now we are getting somewhere. We see: `Get https://hawkular-metrics:443/hawkular/metrics/metrics?type=gauge: dial tcp 172.30.146.174:443: no route to host`. 
+
+Interestingly, we see a request to `https://hawkular-metrics:443/`, which is not qualified with our internal host name. For any connectivity issues, when you see that there is SSL going on, think self-signed certificates and the issues they can cause for HTTP clients.
+
+In the setup guides available, we see that the `master-config.json` is pretty explicit about what domains to allow for CORS:
+
+```
+$ vi /etc/origin/master/master-config.yaml
+
+...
+
+corsAllowedOrigins:
+  - 127.0.0.1
+  - localhost
+  - 10.0.1.53
+  - 52.76.129.116
+  - kubernetes.default
+  - ip-10-0-1-53.ap-southeast-1.compute.internal
+  - kubernetes
+  - openshift.default
+  - openshift.default.svc
+  - 172.30.0.1
+  - openshift.default.svc.cluster.local
+  - kubernetes.default.svc
+  - kubernetes.default.svc.cluster.local
+  - openshift
+
+...
+
+```
+
+Adding the following may help:
+
+```
+corsAllowedOrigins:
+  ...
+  - hawkular-metrics
+```
+
+However after saving, restarting with `systemctl restart atomic-openshift-master.service` and rechecking the logs shows the same issue. At this stage, given the host is not fully qualified with our internal host name, the best bet might be to redeploy and explicitly set the host:
+
+
+```bash
+oc new-app --as=system:serviceaccount:openshift-infra:metrics-deployer \
+    -f metrics-deployer.yaml \
+    -p HAWKULAR_METRICS_HOSTNAME=hawkular-metrics.<hostname>
+```
