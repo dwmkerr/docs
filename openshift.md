@@ -218,17 +218,59 @@ corsAllowedOrigins:
 
 Adding the following may help:
 
-```
+```yaml
 corsAllowedOrigins:
   ...
   - hawkular-metrics
 ```
 
-However after saving, restarting with `systemctl restart atomic-openshift-master.service` and rechecking the logs shows the same issue. At this stage, given the host is not fully qualified with our internal host name, the best bet might be to redeploy and explicitly set the host:
-
+However after saving, restarting with `systemctl restart atomic-openshift-master.service` and rechecking the logs shows the same issue. Let's try connecting ourselves. First, we can check what routes we have to the service:
 
 ```bash
-oc new-app --as=system:serviceaccount:openshift-infra:metrics-deployer \
-    -f metrics-deployer.yaml \
-    -p HAWKULAR_METRICS_HOSTNAME=hawkular-metrics.<hostname>
+$ oc get svc
+NAME                       CLUSTER_IP       EXTERNAL_IP   PORT(S)                               SELECTOR                  AGE
+hawkular-cassandra         172.30.156.179   <none>        9042/TCP,9160/TCP,7000/TCP,7001/TCP   type=hawkular-cassandra   20h
+hawkular-cassandra-nodes   None             <none>        9042/TCP,9160/TCP,7000/TCP,7001/TCP   type=hawkular-cassandra   20h
+hawkular-metrics           172.30.146.174   <none>        443/TCP                               name=hawkular-metrics     20h
+heapster                   172.30.2.114     <none>        80/TCP                                name=heapster             20h
 ```
+
+Indeed, it seems that `hawkular-metrics` is running on `172.30.146.74`. So maybe it is not running correctly? Another look at `oc get pods` shows a potential problem:
+
+```bash
+$ oc get pods
+NAME                     READY     STATUS             RESTARTS   AGE
+hawkular-metrics-s8euf   0/1       Pending            0          20h
+heapster-dm3lv           0/1       CrashLoopBackOff   249        20h
+metrics-deployer-00got   0/1       Error              0          20h
+```
+
+The `metrics-deployer` pod is in an error state. Let's dig deeper:
+
+```bash
+$ oc logs pod/metrics-deployer-00got
+...
+Error from server: serviceaccounts "hawkular" already exists
+```
+
+It looks like the installer failed due to an account already existing. Likely from a failed earlier attempt. Checking the readme for [Origin Metrics](https://github.com/openshift/origin-metrics) shows a handy [guide for cleanup up](https://github.com/openshift/origin-metrics#cleanup):
+
+```bash
+# Remove deployed components.
+oc delete all,secrets,sa,templates --selector=metrics-infra -n openshift-infra
+# Remove the deployer itself.
+oc delete sa,secret metrics-deployer -n openshift-infra
+```
+
+This time I followed the instructions to setup metrics just as before, **except** for creating the `hawkular` service account, as the installer error message suggested that it was trying to create it itself. After a few minutes of watching `oc get events --watch`:
+
+```bash
+$ oc get pods
+NAME                         READY     STATUS      RESTARTS   AGE
+hawkular-cassandra-1-r1muo   1/1       Running     0          2m
+hawkular-metrics-y21m3       1/1       Running     0          2m
+heapster-57qnl               1/1       Running     4          2m
+metrics-deployer-ifm5r       0/1       Completed   0          2m
+```
+
+And metrics are now working fine.
