@@ -280,3 +280,11 @@ metrics-deployer-ifm5r       0/1       Completed   0          2m
 ```
 
 And metrics are now working fine.
+
+Resources which were useful:
+
+- https://docs.openshift.com/enterprise/3.1/install_config/cluster_metrics.html
+- https://github.com/openshift/origin/issues/6725
+- https://github.com/openshift/origin-metrics/issues/123
+- https://github.com/openshift/origin-metrics
+- https://github.com/openshift/origin/issues/8176
