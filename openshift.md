@@ -15,6 +15,7 @@ Confusing no?
 1. Read the Architecture Overview: https://docs.openshift.org/latest/architecture/index.html#architecture-index
 2. If you don't know Kubernetes, learn Kubernetes first (at least the basics)
 3. Actually set up OpenShift on some VMs. Two choices here, try [Installing OpenShift Origin with Ansible on AWS](https://docs.openshift.org/latest/install_config/configuring_aws.html) OR try installing OpenShift Enterprise on VMs. There's a good Udemy course on [Installing and Configuring OpenShift Enterprise](udemy.com/openshift-enterprise-installation-and-configuration/)
+4. Read the basics of the [OpenShift CLI](https://docs.openshift.com/enterprise/3.0/cli_reference/basic_cli_operations.html)
 
 ## Diagnosing Issues
 
@@ -149,6 +150,39 @@ nt on machine
   17h           8s              6046    {kubelet ip-10-0-1-231.ap-southeast-1.compute.internal} spec.containers{heapster}       Backoff Back-off restarting failed docker container
 ```
   
-Notice we have a container in the `Waiting` state with the `Reason: CrashLoopBackOff`. The system is smart enough to not waste too many resources on a continously crashing container.
+Notice we have a container in the `Waiting` state with the `Reason: CrashLoopBackOff`. The system is smart enough to not waste too many resources on a continously crashing container. A quick look at the recent events shows something similar:
 
-So we can see the **pod** has issues - now we need to see the actual docker logs for the pod and try and work out what was the failure.
+```bash
+$ oc get events
+FIRSTSEEN   LASTSEEN   COUNT     NAME             KIND      SUBOBJECT                   REASON    SOURCE                                                    MESSAGE
+...
+9m          9m         1         heapster-dm3lv   Pod       spec.containers{heapster}   Created   {kubelet ip-10-0-1-231.XXX}   Created with docker id 31a08da9b835
+9m          9m         1         heapster-dm3lv   Pod       spec.containers{heapster}   Started   {kubelet ip-10-0-1-231.XXX}   Started with docker id 31a08da9b835
+4m          4m         1         heapster-dm3lv   Pod       spec.containers{heapster}   Created   {kubelet ip-10-0-1-231.XXX}   Created with docker id 60f2b422bf39
+4m          4m         1         heapster-dm3lv   Pod       spec.containers{heapster}   Started   {kubelet ip-10-0-1-231.XXX}   Started with docker id 60f2b422bf39
+```
+
+The heapster container is getting created again and again.
+
+So we can see the **pod** has issues - now we need to see the actual docker logs for the pod and try and work out what was the failure. Trying to check the pod logs is a no-go:
+
+```bash
+$ oc logs heapster-dm3lv
+Error from server: Internal error occurred: Pod "heapster-dm3lv" in namespace "openshift-infra": container "heapster" is in waiting state.
+```
+
+The pod is waiting, we need to see the *previous* logs. Fortunately, we have a flag for that. The `-p` flag for logs says: `-p, --previous=false: If true, print the logs for the previous instance of the container in a pod if it exists.`. So we can see what went wrong:
+
+
+```bash
+$ oc logs -p heapster-dm3lv
+Starting Heapster with the following arguments: --source=kubernetes:https://kubernetes.default.svc:443?useServiceAccount=true&kubeletHttps=true&kubeletPort=10250 --sink=hawkular:https://hawkular-metrics:443?tenant=_system&labelToTenant=pod_namespace&caCert=/hawkular-cert/hawkular-metrics-ca.certificate&user=hawkular&pass=17m-SlKEDZEV7yK&filter=label(container_name:^/system.slice.*|^/user.slice) --logtostderr=true --tls_cert=/secrets/heapster.cert --tls_key=/secrets/heapster.key --tls_client_ca=/secrets/heapster.client-ca --allowed_users=system:master-proxy
+I0128 04:25:36.068928       1 heapster.go:60] heapster --source=kubernetes:https://kubernetes.default.svc:443?useServiceAccount=true&kubeletHttps=true&kubeletPort=10250 --sink=hawkular:https://hawkular-metrics:443?tenant=_system&labelToTenant=pod_namespace&caCert=/hawkular-cert/hawkular-metrics-ca.certificate&user=hawkular&pass=17m-SlKEDZEV7yK&filter=label(container_name:^/system.slice.*|^/user.slice) --logtostderr=true --tls_cert=/secrets/heapster.cert --tls_key=/secrets/heapster.key --tls_client_ca=/secrets/heapster.client-ca --allowed_users=system:master-proxy
+I0128 04:25:36.071466       1 heapster.go:61] Heapster version 0.18.0
+I0128 04:25:36.071937       1 kube_factory.go:168] Using Kubernetes client with master "https://kubernetes.default.svc:443" and version "v1"
+I0128 04:25:36.071947       1 kube_factory.go:169] Using kubelet port 10250
+I0128 04:25:36.072242       1 driver.go:491] Initialised Hawkular Sink with parameters {_system https://hawkular-metrics:443?tenant=_system&labelToTenant=pod_namespace&caCert=/hawkular-cert/hawkular-metrics-ca.certificate&user=hawkular&pass=17m-SlKEDZEV7yK&filter=label(container_name:^/system.slice.*|^/user.slice) 0xc20818a5a0 }
+F0128 04:25:39.083374       1 heapster.go:67] Get https://hawkular-metrics:443/hawkular/metrics/metrics?type=gauge: dial tcp 172.30.146.174:443: no route to host
+```
+
+Now we are getting somewhere. We see: `Get https://hawkular-metrics:443/hawkular/metrics/metrics?type=gauge: dial tcp 172.30.146.174:443: no route to host`. 
