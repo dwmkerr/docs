@@ -262,7 +262,13 @@ oc delete all,secrets,sa,templates --selector=metrics-infra -n openshift-infra
 oc delete sa,secret metrics-deployer -n openshift-infra
 ```
 
-This time I followed the instructions to setup metrics just as before, **except** for creating the `hawkular` service account, as the installer error message suggested that it was trying to create it itself. After a few minutes of watching `oc get events --watch`:
+You might find that after checking `oc get pods` some pods are stuck in a `Terminating` state. If this persits, go nuclear:
+
+```bash
+$ oc delete pods/hawkular-metrics-zgnjx --grace-period=0
+```
+
+This time I followed the instructions to setup metrics just as before, **except** for creating the `hawkular` service account, as the installer error message suggested that it was trying to create it itself. After a few minutes of watching `oc get events --watch` things looked healthy. A quick check to confirm:
 
 ```bash
 $ oc get pods
