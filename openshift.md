@@ -9,6 +9,7 @@ Confusing no?
 - OpenShift Origin: Open source, community and RH maintained. Can be installed for free.
 - OpenShift Enterprise: A few versions behind, bullet proofed by RH. Expensive.
 - OpenShift Cloud: Enterpise, on the cloud, subscription based.
+- OpenShift Container Platform: What OpenShift Enterprise has been called since version 3.3. I think, but who the hell knows.
 
 ## Getting Started
 
