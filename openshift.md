@@ -17,6 +17,50 @@ Confusing no?
 3. Actually set up OpenShift on some VMs. Two choices here, try [Installing OpenShift Origin with Ansible on AWS](https://docs.openshift.org/latest/install_config/configuring_aws.html) OR try installing OpenShift Enterprise on VMs. There's a good Udemy course on [Installing and Configuring OpenShift Enterprise](udemy.com/openshift-enterprise-installation-and-configuration/)
 4. Read the basics of the [OpenShift CLI](https://docs.openshift.com/enterprise/3.0/cli_reference/basic_cli_operations.html)
 
+## Identity Providers
+
+Check out the documentation for [Configuring Authentication and User Agent](https://docs.openshift.com/enterprise/3.2/install_config/configuring_authentication.html#LDAPPasswordIdentityProvider).
+
+An example `htpasswd` provider:
+
+```yaml
+  - challenge: true
+    login: true
+    mappingMethod: claim
+    name: htpasswd_auth
+    provider:
+      apiVersion: v1
+      file: /etc/origin/openshift-passwd
+      kind: HTPasswdPasswordIdentityProvider
+```
+
+An example `ldap` provider:
+
+```yaml
+identityProviders:
+  - name: "my_ldap_provider" 
+    challenge: true 
+    login: true 
+    mappingMethod: claim 
+    provider:
+      apiVersion: v1
+      kind: LDAPPasswordIdentityProvider
+      attributes:
+        id: 
+        - dn
+        email: 
+        - mail
+        name: 
+        - cn
+        preferredUsername: 
+        - uid
+      bindDN: "cn=root,cn=Users,dc=directory"
+      bindPassword: "password"
+      ca: my-ldap-ca-bundle.crt 
+      insecure: false 
+      url: "ldap://10.0.3.133:389/cn=users,dc=directory,dc=openshift?sAMAccountName" 
+```
+
 ## Diagnosing Issues
 
 Some assorted tips and tricks.
