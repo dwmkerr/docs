@@ -18,6 +18,14 @@ Confusing no?
 3. Actually set up OpenShift on some VMs. Two choices here, try [Installing OpenShift Origin with Ansible on AWS](https://docs.openshift.org/latest/install_config/configuring_aws.html) OR try installing OpenShift Enterprise on VMs. There's a good Udemy course on [Installing and Configuring OpenShift Enterprise](udemy.com/openshift-enterprise-installation-and-configuration/)
 4. Read the basics of the [OpenShift CLI](https://docs.openshift.com/enterprise/3.0/cli_reference/basic_cli_operations.html)
 
+## Quick Reference
+
+Show all nodes and labels:
+
+```bash
+oc get nodes --show-labels
+```
+
 ## Identity Providers
 
 Check out the documentation for [Configuring Authentication and User Agent](https://docs.openshift.com/enterprise/3.2/install_config/configuring_authentication.html#LDAPPasswordIdentityProvider).
