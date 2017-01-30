@@ -359,3 +359,7 @@ The details of what's actually going on:
 
 - https://access.redhat.com/solutions/2391351
 - https://github.com/openshift-evangelists/vagrant-origin/issues/35
+
+## Good Resources
+
+- http://dustymabe.com/2016/12/07/installing-an-openshift-origin-cluster-on-fedora-25-atomic-host-part-1/ Great guide on setting up a cluster.
