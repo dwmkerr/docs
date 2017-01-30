@@ -341,3 +341,21 @@ Resources which were useful:
 - https://github.com/openshift/origin-metrics/issues/123
 - https://github.com/openshift/origin-metrics
 - https://github.com/openshift/origin/issues/8176
+
+### Failed to pull image, unsupported schema version 2
+
+Occurs when trying to pull images from a registry which uses the latest schema using an older Docker client. Lot's of wasting time on this one!
+
+**tl;dr**
+
+Just run this:
+
+```bash
+oc set env dc/docker-registry -n default REGISTRY_MIDDLEWARE_REPOSITORY_OPENSHIFT_ACCEPTSCHEMA2=true
+systemctl restart origin-master.service
+```
+
+The details of what's actually going on:
+
+- https://access.redhat.com/solutions/2391351
+- https://github.com/openshift-evangelists/vagrant-origin/issues/35
