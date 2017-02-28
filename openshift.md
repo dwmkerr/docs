@@ -355,16 +355,12 @@ oc set env dc/docker-registry -n default REGISTRY_MIDDLEWARE_REPOSITORY_OPENSHIF
 systemctl restart origin-master.service
 ```
 
-The details of what's actually going on:
+Details:
 
-- https://access.redhat.com/solutions/2391351
-- https://github.com/openshift-evangelists/vagrant-origin/issues/35
-
-And here are the docs detailing the new flag:
-
-https://docs.openshift.com/container-platform/3.3/release_notes/ocp_3_3_release_notes.html#ocp-support-docker-distribution-2-4
-
-SEarch for
+- Acknowledgement of the issue (OSE 3.2): https://docs.openshift.com/enterprise/3.2/release_notes/ose_3_2_release_notes.html (under 'known issues')
+- The fix (OCP 3.3): https://docs.openshift.com/container-platform/3.3/release_notes/ocp_3_3_release_notes.html#ocp-support-docker-distribution-2-4
+- More info: https://access.redhat.com/solutions/2391351
+- Even more info: https://github.com/openshift-evangelists/vagrant-origin/issues/35
 
 ## Good Resources
 
