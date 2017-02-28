@@ -360,6 +360,12 @@ The details of what's actually going on:
 - https://access.redhat.com/solutions/2391351
 - https://github.com/openshift-evangelists/vagrant-origin/issues/35
 
+And here are the docs detailing the new flag:
+
+https://docs.openshift.com/container-platform/3.3/release_notes/ocp_3_3_release_notes.html#ocp-support-docker-distribution-2-4
+
+SEarch for
+
 ## Good Resources
 
 - http://dustymabe.com/2016/12/07/installing-an-openshift-origin-cluster-on-fedora-25-atomic-host-part-1/ Great guide on setting up a cluster.
