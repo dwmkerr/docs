@@ -363,3 +363,24 @@ The details of what's actually going on:
 ## Good Resources
 
 - http://dustymabe.com/2016/12/07/installing-an-openshift-origin-cluster-on-fedora-25-atomic-host-part-1/ Great guide on setting up a cluster.
+
+## How to configure node selectors for a deployment
+
+To use Node Selectors for deployment configurations, edit the YAML to include a `spec.template.spec.nodeSelector` like so:
+
+```yml
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  # etc
+spec:
+  # etc
+  template:
+    # etc
+    spec:
+      containers:
+        # etc
+      nodeSelector:
+        zone: west
+# etc
+```
