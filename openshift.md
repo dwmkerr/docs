@@ -342,6 +342,22 @@ Resources which were useful:
 - https://github.com/openshift/origin-metrics
 - https://github.com/openshift/origin/issues/8176
 
+### Failed to pull image, "unauthorized: authentication required"
+
+First thing to try - if you are pulling from a private registry on the Docker Hub, make sure you have setup your secrets. If that doesn't work, try changing:
+
+```
+myorg/myimage:mytag
+```
+
+to:
+
+```
+docker.io/myorg/myimage:mytag
+```
+
+This took me hours to work out...
+
 ### Failed to pull image, unsupported schema version 2
 
 Occurs when trying to pull images from a registry which uses the latest schema using an older Docker client. Lot's of wasting time on this one!
