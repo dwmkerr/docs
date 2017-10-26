@@ -342,6 +342,22 @@ Resources which were useful:
 - https://github.com/openshift/origin-metrics
 - https://github.com/openshift/origin/issues/8176
 
+### Failed to pull image, "unauthorized: authentication required"
+
+First thing to try - if you are pulling from a private registry on the Docker Hub, make sure you have setup your secrets. If that doesn't work, try changing:
+
+```
+myorg/myimage:mytag
+```
+
+to:
+
+```
+docker.io/myorg/myimage:mytag
+```
+
+This took me hours to work out...
+
 ### Failed to pull image, unsupported schema version 2
 
 Occurs when trying to pull images from a registry which uses the latest schema using an older Docker client. Lot's of wasting time on this one!
@@ -355,11 +371,34 @@ oc set env dc/docker-registry -n default REGISTRY_MIDDLEWARE_REPOSITORY_OPENSHIF
 systemctl restart origin-master.service
 ```
 
-The details of what's actually going on:
+Details:
 
-- https://access.redhat.com/solutions/2391351
-- https://github.com/openshift-evangelists/vagrant-origin/issues/35
+- Acknowledgement of the issue (OSE 3.2): https://docs.openshift.com/enterprise/3.2/release_notes/ose_3_2_release_notes.html (under 'known issues')
+- The fix (OCP 3.3): https://docs.openshift.com/container-platform/3.3/release_notes/ocp_3_3_release_notes.html#ocp-support-docker-distribution-2-4
+- More info: https://access.redhat.com/solutions/2391351
+- Even more info: https://github.com/openshift-evangelists/vagrant-origin/issues/35
 
 ## Good Resources
 
 - http://dustymabe.com/2016/12/07/installing-an-openshift-origin-cluster-on-fedora-25-atomic-host-part-1/ Great guide on setting up a cluster.
+
+## How to configure node selectors for a deployment
+
+To use Node Selectors for deployment configurations, edit the YAML to include a `spec.template.spec.nodeSelector` like so:
+
+```yml
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  # etc
+spec:
+  # etc
+  template:
+    # etc
+    spec:
+      containers:
+        # etc
+      nodeSelector:
+        zone: west
+# etc
+```
