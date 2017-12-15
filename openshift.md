@@ -2,6 +2,14 @@
 
 At a high-level, OpenShift is Red Hat's 'platform as a service' offering. It is essentially Kubernete's with some additional features on top, such as Jenkins clusters for building, the facility to trigger builds from source changes etc.
 
+## Quick References
+
+Scale down/up:
+
+```
+oc scale --replicas 0 dc/db-accounts
+```
+
 ## Flavours
 
 Confusing no?
