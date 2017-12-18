@@ -2,6 +2,8 @@
 
 The most useful bash tips and tricks.
 
+- [Cheatsheet for Bash Conditional Operators](http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_07_01.html)
+
 ## Check if a folder exists
 
 ```bash
