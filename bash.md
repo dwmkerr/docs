@@ -20,12 +20,20 @@ if [[ -e './some-file' ]]; then
 fi
 ```
 
-## Loop over files
+## Loop over files / folders
 
 ```bash
 for file in Data/*.txt; do
     # If the glob expands to nothing then we get the goofy 'original glob' result
     [ -e "$file" ] || continue
+    # ... rest of the loop body
+done
+```
+
+```bash
+for folder in Data/*/; do
+    # If the glob expands to nothing then we get the goofy 'original glob' result
+    [ -e "$folder" ] || continue
     # ... rest of the loop body
 done
 ```
