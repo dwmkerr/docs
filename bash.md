@@ -2,6 +2,8 @@
 
 The most useful bash tips and tricks.
 
+## Files and Folders
+
 - [Cheatsheet for Bash Conditional Operators](http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_07_01.html)
 
 ## Check if a folder exists
@@ -37,3 +39,18 @@ for folder in Data/*/; do
     # ... rest of the loop body
 done
 ```
+
+## Loop over each value in a multiline string
+
+```bash
+while read -r line; do
+    echo "... $line ..."
+done <<< "$variable"
+```
+
+## Sed
+
+### Append a line
+
+- TODO!
+
