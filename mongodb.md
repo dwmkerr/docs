@@ -1,5 +1,26 @@
 # mongodb
 
+## Querying
+
+```
+db.users
+  .aggregate(
+   [
+      // Match only users in a certain set of towns.
+      {
+          $match: {town: { $in: ['ripon'] } }
+      },
+      // Group by town, measure count.
+      {
+        $group : {
+           _id : "$town",
+           count: { $sum: 1 }
+        }
+      }
+   ]
+)
+```
+
 ## General DBA
 
 ```
