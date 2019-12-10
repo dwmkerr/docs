@@ -19,3 +19,11 @@ done
 
 kill $kubectl_proxy_pid
 ```
+
+## Setting the default namespace for commands
+
+Easy:
+
+```sh
+k config set-context --current --namespace ingress-nginx
+```
