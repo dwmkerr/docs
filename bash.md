@@ -2,7 +2,6 @@
 
 The most useful bash tips and tricks.
 
-
 <!-- vim-markdown-toc GFM -->
 
 * [Variables](#variables)
@@ -13,8 +12,11 @@ The most useful bash tips and tricks.
     * [Loop over files / folders](#loop-over-files--folders)
     * [Loop over each value in a multiline string](#loop-over-each-value-in-a-multiline-string)
     * [Loop over each line in a file](#loop-over-each-line-in-a-file)
+* [BASH Regex](#bash-regex)
+    * [Extract with Regex in Bash](#extract-with-regex-in-bash)
 * [Sed](#sed)
     * [Append a line](#append-a-line)
+    * [Extract a capture group](#extract-a-capture-group)
 
 <!-- vim-markdown-toc -->
 
@@ -88,9 +90,37 @@ while read -r line; do
 done <file.txt
 ```
 
+## BASH Regex
+
+```sh
+# osx/bsd
+man re_format
+
+# GNU
+man grep
+```
+
+### Extract with Regex in Bash
+
+```
+image_tag="<img src="/wp-content/uploads/2012/imported/CDSF-CodePlex-Banner-Logo.png" alt="" />"
+regex='.*alt="([^"]+)"'
+if [[ $image_tag =~ $regex ]]; then echo $BASH_REMATCH[1]; fi
+```
+
 ## Sed
 
 ### Append a line
 
-- TODO!
+```bash
+sed 's//\n/g'
+```
 
+### Extract a capture group
+
+In the below example, we extract the value of the `src` attribute by matching the whole line, and capturing `src` only.
+
+```bash
+image_tag="<img src="/wp-content/uploads/2012/imported/CDSF-CodePlex-Banner-Logo.png" alt="" />"
+image_tag_src=$(echo $image_tag | sed -E 's/.*src="([^"]*).*/\1/')
+```
