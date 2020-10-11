@@ -42,3 +42,7 @@ More info: `:help i_CTRL-R` and `:help c_CTRL-R`.
 Beginner friendly and to-the-point overview of TypeScript, assuming the reader already knows JavaScript:
 
 https://github.com/rmolinamir/typescript-cheatsheet
+
+Other links:
+
+- [TypeScript for JavaScript Programmers](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html)
