@@ -7,6 +7,7 @@ Useful guides, documents, snippets for working with tech.
 
 * [Introduction](#introduction)
 * [Kubernetes](#kubernetes)
+    * [Set the Current Context](#set-the-current-context)
     * [Setting Cluster Credentials on the Command Line](#setting-cluster-credentials-on-the-command-line)
     * [Deleting namespaces stuck in 'terminating'](#deleting-namespaces-stuck-in-terminating)
     * [Setting the default namespace for commands](#setting-the-default-namespace-for-commands)
@@ -23,6 +24,12 @@ Useful guides, documents, snippets for working with tech.
 This is a set of assorted documents, snippets and links I've found useful and often refer to.
 
 # Kubernetes
+
+## Set the Current Context
+
+```sh
+kubectl config use-context something
+```
 
 ## Setting Cluster Credentials on the Command Line
 
@@ -115,3 +122,4 @@ https://github.com/rmolinamir/typescript-cheatsheet
 Other links:
 
 - [TypeScript for JavaScript Programmers](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html)
+- [10 Insights from Adopting TypeScript at Scale](https://www.techatbloomberg.com/blog/10-insights-adopting-typescript-at-scale/) - very useful read for teams / projects who are looking at using TypeScript, with a particular focus on standards/consistency.
