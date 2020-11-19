@@ -6,6 +6,7 @@ Useful guides, documents, snippets for working with tech.
 <!-- vim-markdown-toc GFM -->
 
 * [Introduction](#introduction)
+* [The Craft of Programming](#the-craft-of-programming)
 * [Kubernetes](#kubernetes)
     * [Set the Current Context](#set-the-current-context)
     * [Setting Cluster Credentials on the Command Line](#setting-cluster-credentials-on-the-command-line)
@@ -22,6 +23,12 @@ Useful guides, documents, snippets for working with tech.
 # Introduction
 
 This is a set of assorted documents, snippets and links I've found useful and often refer to.
+
+# The Craft of Programming
+
+These documents relate to the _craft_ of engineering - not how to solve specific problems, but how to _think_ about designing solutions.
+
+- (AHA Programming 💡)[https://kentcdodds.com/blog/aha-programming/] - The dangers of DRY, the web of WET, the awesomeness of AHA.
 
 # Kubernetes
 
